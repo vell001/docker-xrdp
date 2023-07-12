@@ -77,4 +77,50 @@ RUN chown -R 1020:1020 /home/ubuntu/.config
 
 COPY start_xrdp /bin/start_xrdp
 EXPOSE 3389/tcp
-ENTRYPOINT ["/bin/start_xrdp"] 
+ENTRYPOINT ["/bin/start_xrdp"]
+
+# 安装ros
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu bionic main" > /etc/apt/sources.list.d/ros-latest.list'
+
+RUN curl -s http://packages.ros.org/ros.key | apt-key add -
+RUN apt update
+RUN DEBIAN_FRONTEND=noninteractive apt install -y ros-melodic-desktop-full
+RUN echo "source /opt/ros/melodic/setup.bash" >> /root/.bashrc
+
+# 安装gtsam
+RUN apt install -y software-properties-common
+RUN add-apt-repository ppa:borglab/gtsam-release-4.1
+RUN apt update
+RUN apt install -y libgtsam-dev libgtsam-unstable-dev
+
+# 安装GeographicLib
+RUN git clone https://gitee.com/vell/GeographicLib.git
+RUN cd GeographicLib && mkdir build && cd build && cmake .. && make -j $(nproc) && make install
+RUN rm -rf GeographicLib
+
+# 安装octomap
+RUN apt install -y ros-melodic-octomap*
+
+# 安装Sophus
+RUN git clone -b ubt18.04 https://gitee.com/vell/Sophus.git
+RUN cd Sophus && mkdir build && cd build && cmake .. && make -j $(nproc) && make install
+RUN rm -rf Sophus
+
+# 安装Livox-SDK
+RUN git clone https://gitee.com/vell/Livox-SDK.git
+RUN cd Livox-SDK && cd build && cmake .. && make -j $(nproc) && make install
+RUN rm -rf Livox-SDK
+
+# 安装pcap
+RUN apt install -y libpcap-dev
+
+# 安装g2o
+RUN apt install -y ros-melodic-geodesy ros-melodic-pcl-ros ros-melodic-nmea-msgs ros-melodic-libg2o
+RUN git clone -b cmake_3.10 https://gitee.com/vell/g2o.git --depth=1
+RUN cd g2o && mkdir build && cd build && cmake .. && make -j $(nproc) && make install
+RUN echo "export LD_LIBRARY_PATH=\"/usr/lib/x86_64-linux-gnu/:/usr/lib:/usr/local/lib:\$LD_LIBRARY_PATH\"" >> /root/.bashrc
+RUN rm -rf g2o
+
+# 设置环境
+RUN echo "source /opt/ros/melodic/setup.bash" >> /home/ubuntu/.bashrc && \
+echo "export LD_LIBRARY_PATH=\"/usr/lib/x86_64-linux-gnu/:/usr/lib:/usr/local/lib:\$LD_LIBRARY_PATH\"" >> /home/ubuntu/.bashrc

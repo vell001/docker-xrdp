@@ -34,5 +34,8 @@ if test -r /etc/profile; then
         . /etc/profile
 fi
 
+# 解决无法复制文件问题
+umount -f xrdp-chansrv
+
 test -x /etc/X11/Xsession && exec /etc/X11/Xsession
 exec /bin/sh /etc/X11/Xsession

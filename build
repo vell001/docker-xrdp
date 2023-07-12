@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker build "$@" -t vell001/ubt18.04_ros_xrdp .
+docker build "$@" -t vell001/ubt18.04_ros_xrdp -f ./Dockerfile_ros .
