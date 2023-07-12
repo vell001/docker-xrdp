@@ -18,13 +18,13 @@
 
 # 使用方式
 1. clone源码
-    ```
+    ``` bash
     git clone https://github.com/vell001/docker-xrdp
     ```
 2. 编译【非必要，如果不需要修改Dockerfile，直接跳到下一步即可】
    可以直接使用我写好的build脚本`./build`编译，默认编译带ros环境的
    也可以docker命令行编译
-    ```
+    ``` bash
     docker build -t vell001/ubt18.04_xrdp -f ./Dockerfile .
     ```
 3. 运行
@@ -32,7 +32,7 @@
    当容器已经存在的话，直接使用旧容器运行
    可以根据我的脚本自行按需修改
    进入容器后，还可以运行`/bin/start_xrdp`来重启xrdp
-    ```
+    ``` bash
     #!/usr/bin/env bash
     docker_image="vell001/ubt18.04_ros_xrdp:latest"
     
@@ -59,20 +59,20 @@
 
 4. 删除容器
    参考`./rm`脚本
-    ```
+    ``` bash
     #!/usr/bin/env bash
     docker stop ubt18.04_ros_xrdp 
     docker rm ubt18.04_ros_xrdp
     ```
 5. 保存新镜像
    参考`./commit`脚本
-    ```
+    ``` bash
     #!/usr/bin/env bash
     docker stop ubt18.04_ros_xrdp
     docker commit ubt18.04_ros_xrdp vell001/ubt18.04_ros_xrdp
     ```
 6. 提交镜像到hub.docker.com【注意，修改为你自己的docker账号哈】
-    ```
+    ``` bash
     docker push vell001/ubt18.04_ros_xrdp:latest
     ```
 
