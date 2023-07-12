@@ -1,6 +1,87 @@
-# docker-remote-desktop
-* 增加中文支持
-* 安装ros1环境，和slam基础库，如：g2o、gtsam
+# docker+xrdp+xfce4+ros的中文开发环境
+# 前言
+![Screenshot of XFCE desktop](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_2.png)
+
+1. 团队多人协同经常出现开发环境不一致问题
+2. ubuntu默认的桌面系统动不动就挂掉
+3. 一台高配服务器如何让多人同时独立使用一套完整统一的带界面的开发环境
+4. 出差笔记本性能差，能否直接连服务器开发
+
+带着这几个问题，最先想到的就是docker环境了，但每次都是想搞，后面就烂尾了，因为vnc搭建远程桌面比较简单，但vnc需要消耗较大网络带宽，出差在机场这些网络较差的地方还是有点不爽，远程桌面最优解还是微软的rdp，在linux下的插件就是xrdp
+由于我们开发环境是ubuntu18.04的，对xrdp支持不太友好，安装总是会出各种蓝屏、黑屏、中文输入法无法输入等等问题，就一直拖着没完整的去做一个镜像
+这次抽了点时间，把坑都躺了一遍
+源码：https://github.com/vell001/docker-xrdp
+制作好的镜像：
+1. 不带ros环境，只有xfce4+xrdp: https://hub.docker.com/repository/docker/vell001/ubt18.04_xrdp
+2. 带ros环境: https://hub.docker.com/repository/docker/vell001/ubt18.04_ros_xrdp
+3. 只有ros环境，不带xrdp: https://hub.docker.com/repository/docker/vell001/ubt18.04_ros
+
+# 使用方式
+1. clone源码
+    ```
+    git clone https://github.com/vell001/docker-xrdp
+    ```
+2. 编译【非必要，如果不需要修改Dockerfile，直接跳到下一步即可】
+   可以直接使用我写好的build脚本`./build`编译，默认编译带ros环境的
+   也可以docker命令行编译
+    ```
+    docker build -t vell001/ubt18.04_xrdp -f ./Dockerfile .
+    ```
+3. 运行
+   可以直接使用我写好的run脚本`./run`运行，默认运行带ros环境的镜像，xrdp端口为`23389`，挂载本地/data到/data上
+   当容器已经存在的话，直接使用旧容器运行
+   可以根据我的脚本自行按需修改
+   进入容器后，还可以运行`/bin/start_xrdp`来重启xrdp
+    ```
+    #!/usr/bin/env bash
+    docker_image="vell001/ubt18.04_ros_xrdp:latest"
+    
+    docker_name="ubt18.04_ros_xrdp"
+    num=$(docker ps -a | grep -w ${docker_name} | wc -l)
+    if [ $num -ne 0 ]; then
+      container_id=$(docker ps -a | grep -w ${docker_name} | grep -v grep | awk '{print $1}')
+      echo "use old container: "$container_id
+      docker container start $container_id
+      docker exec -it $container_id /bin/start_xrdp /bin/bash
+    else
+      docker run -it \
+        --privileged=true \
+        --hostname="$(hostname)" \
+        --publish="23389:3389/tcp" \
+        --name=${docker_name} \
+        -v /data:/data \
+        --shm-size="2g" \
+        ${docker_image} /bin/bash
+    fi
+    ```
+    启动后就可以在windows上连接rdp了，默认端口23389，用户名：ubuntu，密码：ubuntu
+    ![Screenshot of login prompt](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_1.png)
+
+4. 删除容器
+   参考`./rm`脚本
+    ```
+    #!/usr/bin/env bash
+    docker stop ubt18.04_ros_xrdp 
+    docker rm ubt18.04_ros_xrdp
+    ```
+5. 保存新镜像
+   参考`./commit`脚本
+    ```
+    #!/usr/bin/env bash
+    docker stop ubt18.04_ros_xrdp
+    docker commit ubt18.04_ros_xrdp vell001/ubt18.04_ros_xrdp
+    ```
+6. 提交镜像到hub.docker.com【注意，修改为你自己的docker账号哈】
+    ```
+    docker push vell001/ubt18.04_ros_xrdp:latest
+    ```
+
+# 感谢
+xfce4+xrdp部分参考： https://github.com/scottyhardy/docker-remote-desktop
+
+----------
+
+# docker-xrdp
 
 Docker image with RDP server using [xrdp](http://xrdp.org) on Ubuntu with [XFCE](https://xfce.org).
 
