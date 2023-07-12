@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker stop ubt18.04_ros_xrdp && docker rm ubt18.04_ros_xrdp

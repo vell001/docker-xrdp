@@ -1,6 +1,6 @@
 # docker-remote-desktop
-
-[![build](https://github.com/scottyhardy/docker-remote-desktop/actions/workflows/build.yml/badge.svg)](https://github.com/scottyhardy/docker-remote-desktop/actions/workflows/build.yml)
+* 增加中文支持
+* 安装ros1环境，和slam基础库，如：g2o、gtsam
 
 Docker image with RDP server using [xrdp](http://xrdp.org) on Ubuntu with [XFCE](https://xfce.org).
 
@@ -11,7 +11,7 @@ Images are built weekly using the Ubuntu Docker image with the 'latest' tag.
 Download the latest version of the image:
 
 ```bash
-docker pull scottyhardy/docker-remote-desktop
+docker pull vell001/ubt18.04_ros_xrdp
 ```
 
 To run with an interactive bash session:
@@ -22,7 +22,7 @@ docker run -it \
     --hostname="$(hostname)" \
     --publish="3389:3389/tcp" \
     --name="remote-desktop" \
-    scottyhardy/docker-remote-desktop:latest /bin/bash
+    vell001/ubt18.04_ros_xrdp:latest /bin/bash
 ```
 
 To start as a detached daemon:
@@ -32,14 +32,14 @@ docker run --detach \
     --rm \
     --hostname="$(hostname)" \
     --publish="3389:3389/tcp" \
-    --name="remote-desktop" \
-    scottyhardy/docker-remote-desktop:latest
+    --name="ubt18.04_ros_xrdp" \
+    vell001/ubt18.04_ros_xrdp:latest
 ```
 
 To stop the detached container:
 
 ```bash
-docker kill remote-desktop
+docker kill ubt18.04_ros_xrdp
 ```
 
 ## Connecting with an RDP client
@@ -56,18 +56,18 @@ Username: ubuntu
 Password: ubuntu
 ```
 
-![Screenshot of login prompt](https://raw.githubusercontent.com/scottyhardy/docker-remote-desktop/master/screenshot_1.png)
+![Screenshot of login prompt](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_1.png)
 
-![Screenshot of XFCE desktop](https://raw.githubusercontent.com/scottyhardy/docker-remote-desktop/master/screenshot_2.png)
+![Screenshot of XFCE desktop](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_2.png)
 
 ## Building docker-remote-desktop on your own machine
 
 First, clone the GitHub repository:
-
+[commit](commit)
 ```bash
-git clone https://github.com/scottyhardy/docker-remote-desktop.git
+git clone https://github.com/vell001/docker-xrdp.git
 
-cd docker-remote-desktop
+cd docker-xrdp
 ```
 
 You can then build the image with the supplied script:
@@ -79,7 +79,7 @@ You can then build the image with the supplied script:
 Or run the following `docker` command:
 
 ```bash
-docker build -t docker-remote-desktop .
+docker build -t ubt18.04_ros_xrdp .
 ```
 
 ## Running local images with scripts
@@ -92,14 +92,8 @@ To run with an interactive bash session:
 ./run
 ```
 
-To start as a detached daemon:
+To remove a container:
 
 ```bash
-./start
-```
-
-To stop the detached container:
-
-```bash
-./stop
+./rm
 ```

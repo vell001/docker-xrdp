@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+pkill -9 xrdp*
+rm -rf /var/run/xrdp
+xrdp-sesman
+xrdp
+exec "$@"

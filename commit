@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+docker stop ubt18.04_ros_xrdp
+docker commit ubt18.04_ros_xrdp vell001/ubt18.04_ros_xrdp

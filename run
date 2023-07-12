@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
+docker_image="vell001/ubt18.04_ros_xrdp:latest"
 
-docker run -it \
-    --rm \
+docker_name="ubt18.04_ros_xrdp"
+num=$(docker ps -a | grep -w ${docker_name} | wc -l)
+if [ $num -ne 0 ]; then
+  container_id=$(docker ps -a | grep -w ${docker_name} | grep -v grep | awk '{print $1}')
+  echo "use old container: "$container_id
+  docker container start $container_id
+  docker exec -it $container_id /bin/start_xrdp /bin/bash
+else
+  docker run -it \
+    --privileged=true \
     --hostname="$(hostname)" \
-    --publish="3389:3389/tcp" \
-    --name="remote-desktop" \
-    --shm-size="1g" \
-    docker-remote-desktop:latest /bin/bash
+    --publish="23389:3389/tcp" \
+    --name=${docker_name} \
+    -v /data:/data \
+    --shm-size="2g" \
+    ${docker_image} /bin/bash
+fi
