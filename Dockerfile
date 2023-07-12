@@ -127,8 +127,9 @@ RUN echo "source /opt/ros/melodic/setup.bash" >> /home/ubuntu/.bashrc && \
 echo "export LD_LIBRARY_PATH=\"/usr/lib/x86_64-linux-gnu/:/usr/lib:/usr/local/lib:\$LD_LIBRARY_PATH\"" >> /home/ubuntu/.bashrc && \
 echo "export TZ=Asia/Shanghai" >> /home/ubuntu/.bashrc
 
-# 设置xfce桌面
-COPY xfce_config/xfce4 /home/ubuntu/.config/xfce4
+# 设置默认config
+COPY home_config /home/ubuntu/.config
+RUN chown -R 1020 /home/ubuntu/.config
 
 COPY start_xrdp /bin/start_xrdp
 EXPOSE 3389/tcp
