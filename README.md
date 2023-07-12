@@ -1,5 +1,7 @@
 # docker+xrdp+xfce4+ros的中文开发环境
+
 # 前言
+
 ![Screenshot of XFCE desktop](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_2.png)
 
 1. 团队多人协同经常出现开发环境不一致问题
@@ -12,11 +14,13 @@
 这次抽了点时间，把坑都躺了一遍
 源码：https://github.com/vell001/docker-xrdp
 制作好的镜像：
+
 1. 不带ros环境，只有xfce4+xrdp: https://hub.docker.com/repository/docker/vell001/ubt18.04_xrdp
 2. 带ros环境: https://hub.docker.com/repository/docker/vell001/ubt18.04_ros_xrdp
 3. 只有ros环境，不带xrdp: https://hub.docker.com/repository/docker/vell001/ubt18.04_ros
 
 # 使用方式
+
 1. clone源码
     ``` bash
     git clone https://github.com/vell001/docker-xrdp
@@ -42,7 +46,7 @@
       container_id=$(docker ps -a | grep -w ${docker_name} | grep -v grep | awk '{print $1}')
       echo "use old container: "$container_id
       docker container start $container_id
-      docker exec -it $container_id /bin/start_xrdp /bin/bash
+      docker exec -d $container_id /bin/start_xrdp
     else
       docker run -it \
         --privileged=true \
@@ -54,9 +58,11 @@
         ${docker_image} /bin/bash
     fi
     ```
-    启动后就可以在windows上连接rdp了，默认端口23389，用户名：ubuntu，密码：ubuntu
-    ![Screenshot of login prompt](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_1.png)
+   启动后就可以在windows上连接rdp了，默认端口23389，用户名：ubuntu，密码：ubuntu
+   ![Screenshot of login prompt](https://raw.githubusercontent.com/vell001/docker-xrdp/master/screenshot_1.png)
 
+   首次运行`./run`时会以交互终端运行，exit后容器会关掉，再次运行`./run`
+   时会以后台进程方式启动容器，当你想长期使用这个容器时，重启物理机后只需要再次运行`./run`即可
 4. 删除容器
    参考`./rm`脚本
     ``` bash
@@ -77,6 +83,7 @@
     ```
 
 # 感谢
+
 xfce4+xrdp部分参考： https://github.com/scottyhardy/docker-remote-desktop
 
 ----------
@@ -125,9 +132,12 @@ docker kill ubt18.04_ros_xrdp
 
 ## Connecting with an RDP client
 
-All Windows desktops and servers come with Remote Desktop pre-installed and macOS users can download the Microsoft Remote Desktop application for free from the App Store.  For Linux users, I'd suggest using the Remmina Remote Desktop client.
+All Windows desktops and servers come with Remote Desktop pre-installed and macOS users can download the Microsoft
+Remote Desktop application for free from the App Store. For Linux users, I'd suggest using the Remmina Remote Desktop
+client.
 
-For the hostname, use `localhost` if the container is hosted on the same machine you're running your Remote Desktop client on and for remote connections just use the name or IP address of the machine you are connecting to.
+For the hostname, use `localhost` if the container is hosted on the same machine you're running your Remote Desktop
+client on and for remote connections just use the name or IP address of the machine you are connecting to.
 NOTE: To connect to a remote machine, it will require TCP port 3389 to be exposed through the firewall.
 
 To log in, use the following default user account details:
@@ -145,6 +155,7 @@ Password: ubuntu
 
 First, clone the GitHub repository:
 [commit](commit)
+
 ```bash
 git clone https://github.com/vell001/docker-xrdp.git
 
@@ -165,7 +176,8 @@ docker build -t ubt18.04_ros_xrdp .
 
 ## Running local images with scripts
 
-I've created some simple scripts that give the minimum requirements for either running the container interactively or running as a detached daemon.
+I've created some simple scripts that give the minimum requirements for either running the container interactively or
+running as a detached daemon.
 
 To run with an interactive bash session:
 
